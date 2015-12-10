@@ -1,0 +1,37 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+
+	<title>ZT to Pyload &bull; Options</title>
+
+	<link title="defaut" type="text/css" rel="stylesheet" href="css/zttopyload.css" media="screen">
+</head>
+<body>
+	<div class="container">
+		<h1>Options</h1>
+		<fieldset>
+			<legend>Compte</legend>
+			<label>Login</label>
+			<input type="text" id="login" name="login" class="input" value="">
+			<label>Mot de passe</label>
+			<input type="password" id="passwd" name="passwd" class="input" value="">
+		</fieldset>
+		<fieldset>
+			<legend>Serveur</legend>
+			<label>IP ou Hostname du serveur</label>
+			<input type="text" id="ip" name="ip" class="input" value="">
+			<label>Port du serveur</label>
+			<input type="text" id="port" name="port" class="input" value="">
+		</fieldset>
+		<div class="form-bottom">
+			<button id="save" >Sauver</button>
+			<button id="test" >Tester</button>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/fonctions.js"></script>
+	<script type="text/javascript" src="js/pyload_api.js"></script>
+	<script type="text/javascript" src="options.js"></script>
+</body>
+</html>
