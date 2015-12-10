@@ -11,6 +11,7 @@ $(document).ready(function() {
 			$("#passwd").val(result.pyload_passwd);
 			$("#ip").val(result.pyload_ip);
 			$("#port").val(result.pyload_port);
+			$("#host").val(result.pyload_host);
 		}
 	});
 	
@@ -37,7 +38,8 @@ $(document).ready(function() {
 	        var api_urlLS = 'http://' + ipLS + ':' + portLS + '/api/';
 			__addToChromeStorage('pyload_api', api_urlLS);
 
-
+	        var api_hostLS = $.trim($("#host").val());
+			__addToChromeStorage('pyload_host', api_hostLS);
 		}
 	});
 
@@ -73,8 +75,5 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		chrome.storage.local.clear();
-
-		$(".connexion").show();
-		$(".deconnexion").hide();
 	});
 });
