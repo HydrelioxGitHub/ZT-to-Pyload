@@ -2,75 +2,73 @@
  * Appel à l'api
  *********************************************/
 function __callAPI() {
-	//Premier argument doit être l'api url
-	var apiUrl = argument[0];
-	//Deuxieme argument doit être le nom de l'api a appeler
-	var apiName = argument [1]
-	var url = apiUrl + '/' + apiName  
+	//Premier argument doit être le nom de l'api a appeler
+	var apiName = arguments [0];
+	console.log("Appel de l'api : " + apiName);
 	
-	//Appel ajax 
+	//2ème argument sont les paramètres de l'api
+	var dataToSend = arguments [1];
+	if (dataToSend == null) {
+		dataToSend == "";
+	}	
+	//3ème argument une fonction de callback pour la réponse
+	var callback = arguments[2];
+	console.log(dataToSend);
 	
-	if(check()) {
-        /*$.ajax({
-            url: api_url + 'addFiles',
-            type: 'post',
-            data: 'pid=' + parseInt(pid, 10) + '&links=' + links,
-            success: function(response) {
-                console.log('links added to package');
-                return response;
-            },
-            error: function(response) {
-                console.log(response);
-                return false;
-            }
-        });*/
-        return true;
-    } else {
-        return false;
-    }
-}
+	//Récupération de l'url de l'api 
+	chrome.storage.local.get(function(result){
+		if(result.pyload_api == null ) {
+			throw "No API url configurée vérifier les options";
+		} else {
+			var urlToCall =  result.pyload_api + apiName ;
+			//Appel ajax 
+			$.ajax({
+				url: urlToCall,
+				type: 'post',
+				dataType: "json",
+				data: dataToSend,
+				success: function(response) {
+					console.log('Retour = ' + response);
+					if (callback != null) {
+						callback(response);
+					}
+				},
+				error: function(response) {
+					return response;
+				}
+			});
+		} 
+	});
+};
 
 /******************************************
  * Fonction qui se connecte à l'api PyLoad
  ******************************************/
-function __connect(api_url, username, password) {
-        $.ajax({
-            url: api_url + 'login',
-            type: 'post',
-            data: 'username=' + username + '&password=' + password,
-			dataType : 'json',
-            success: function(msg,data, settings) {
-            	console.log('connected');
-				console.log(msg + data + settings.responseText);
-                return msg;
-            },
-            error: function(response) {
-				console.log(response);
-                return false;
-            }
-        });
-        return '000';
+function __connect() {
+	chrome.storage.local.get(function(result){
+		if( (result.pyload_login == null) || (result.pyload_passwd== null) ) {
+			throw "Pas de login ou de mot de passe, vérifier les options";
+		} else {
+			var credentials = {
+				username: result.pyload_login,
+				password: result.pyload_passwd
+			} ;
+			__callAPI('login',credentials, function (response) {
+				if (response = true) {
+					console.log("Login Ok") ;
+				} else {
+					console.log("Erreur de login") ;
+				}
+			});
+		} 
+	});
 }
 
 /******************************************
  * Fonction qui retourne l'espace libre restant 
  ******************************************/
-function __freeSpace(api_url) {
-        $.ajax({
-            url: api_url + 'freeSpace',
-            type: 'post',
-			dataType : 'json',
-            success: function(msg,data, settings) {
-            	console.log('test');
-				console.log(msg + data + settings.responseText);
-                return msg;
-            },
-            error: function(response) {
-				console.log(response);
-                return false;
-            }
-        });
-        return '000';
+function __freeSpace() {
+	__callAPI('freeSpace');
 }
 
 /**********************************************
