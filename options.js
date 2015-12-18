@@ -3,7 +3,6 @@ $(document).ready(function() {
 	 * Récupération des options si elles existent déjà
 	 ****************************************/
 	chrome.storage.local.get(function(result){
-		console.log("test  " + JSON.stringify( result));
 		if(result.pyload_login == null || result.pyload_passwd == null || result.pyload_ip == null || result.pyload_port == null) {
 			chrome.storage.local.clear();
 		} else {
