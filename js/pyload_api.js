@@ -4,7 +4,7 @@
 function __callAPI() {
 	//Premier argument doit être le nom de l'api a appeler
 	var apiName = arguments [0];
-	console.log("Appel de l'api : " + apiName);
+	__debugDisplay("Appel de l'api : " + apiName);
 	
 	//2ème argument sont les paramètres de l'api
 	var dataToSend = arguments [1];
@@ -13,7 +13,7 @@ function __callAPI() {
 	}	
 	//3ème argument une fonction de callback pour la réponse
 	var callback = arguments[2];
-	console.log(dataToSend);
+	__debugDisplay(dataToSend);
 	
 	//Récupération de l'url de l'api 
 	chrome.storage.local.get(function(result){
@@ -28,7 +28,7 @@ function __callAPI() {
 				dataType: "json",
 				data: dataToSend,
 				success: function(response) {
-					console.log('Retour = ' + response);
+					__debugDisplay('Retour = ' + response);
 					if (callback != null) {
 						callback(response);
 					}
@@ -55,9 +55,9 @@ function __connect() {
 			} ;
 			__callAPI('login',credentials, function (response) {
 				if (response = true) {
-					console.log("Login Ok") ;
+					__debugDisplay("Login Ok") ;
 				} else {
-					console.log("Erreur de login") ;
+					__debugDisplay("Erreur de login") ;
 				}
 			});
 		} 
@@ -68,8 +68,46 @@ function __connect() {
  * Fonction qui retourne l'espace libre restant 
  ******************************************/
 function __freeSpace() {
-	__callAPI('freeSpace');
+    __callAPI('freeSpace',null, function (response) {
+		__debugDisplay("Espace libre : "+ response) ;
+		return response ;
+	});
 }
+
+/******************************************
+ * Informations sur la file d'attente
+ ******************************************/
+function __getQueue(callback) {
+    __callAPI('getQueue',null, function (response) {
+		__debugDisplay("Informations : "+ JSON.stringify(response)) ;
+		callback (response) ;
+	});
+}
+
+/******************************************
+ * Retrouve un pid à partir du nom
+ ******************************************/
+function __getPIDByName(PIDname, callback) {
+	__getQueue(function(data){
+		// Verification package par package
+		for (var key in data) {
+			var package = data[key];
+			//Si la package a le bon nom
+			if (PIDname == package.name) {
+				__debugDisplay ("PID trouvé pour le package "+ PIDname + " : " + package.pid);
+				if (callback != null) {
+					callback(package.pid);
+				}
+				return package.pid ;
+			}
+		}
+		//Aucun package avec ce nom
+		if (callback != null) {
+			callback(false);
+		}
+	}) ;
+}
+
 
 /**********************************************
  * Fonction qui ajoute un package et des liens
@@ -189,54 +227,6 @@ function __getFileData(fid) {
                 return false;
             }
         });
-    } else {
-        return false;
-    }
-}
-
-
-
-/**************************************************
- * Fonction récup la liste des packages en attente
- **************************************************/
-function __getQueue() {
-    if(check()) {
-        /*$.ajax({
-            url: api_url + 'getQueue',
-            type: 'post',
-            data: '',
-            success: function(response) {
-                console.log('get queue data');
-                return response;
-            },
-            error: function(response) {
-                console.log(response);
-                return false;
-            }
-        });*/
-        
-        var array = [
-            {
-                "name": "Films",
-                "pid": 1,
-                "sizetotal": 734003200,
-                "sizedone": 176160768
-            },
-            {
-                "name": "Musiques",
-                "pid": 2,
-                "sizetotal": 68157440,
-                "sizedone": 28626124
-            },
-            {
-                "name": "Séries TV",
-                "pid": 3,
-                "sizetotal": 367001600,
-                "sizedone": 330301440
-            }
-        ];
-
-        return array;
     } else {
         return false;
     }
