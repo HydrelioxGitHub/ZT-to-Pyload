@@ -1,4 +1,13 @@
 /************************************
+ * Affichage des infos pour débug
+ ************************************/
+function __debugDisplay (infos) {
+	if (debug) {
+		console.log("DEBUG : " + infos);
+	}
+}
+
+/************************************
  * Ajoute une valeur au storage
  ************************************/
 function __addToChromeStorage (name, val) {
