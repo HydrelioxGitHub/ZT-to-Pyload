@@ -6,7 +6,7 @@ console.log (title);
 
 var api_url = 'http://192.168.1.11:8000/api/';
 var username = 'julien';
-var password = 'gTV7y5T';
+var password = '';
 var res = __connect(api_url, username, password);
 console.log(res);
 var test = __freeSpace(api_url);
